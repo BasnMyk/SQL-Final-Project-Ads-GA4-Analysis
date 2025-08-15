@@ -24,7 +24,7 @@ The analysis includes campaign performance metrics, ROMI calculation, reach anal
    Identify the campaign with the highest weekly total value.
 4. **Reach Growth Analysis**  
    Determine the campaign with the largest month-over-month reach growth.
-5. **Adset Longest Continuous Display** *(Optional)*  
+5. **Adset Longest Continuous Display | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/bigquery/ga4_engagement_correlation.sql)** 
    Find the longest daily continuous display period for any adset.
 
 ## Conversion Analysis (GA4 Data)
