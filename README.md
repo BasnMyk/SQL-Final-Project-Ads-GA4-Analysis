@@ -1,5 +1,5 @@
 # ONLINE ADS ANALYSIS REPO
-👇 Collection of SQL & BigQuery projects for online advertising campaigns
+Collection of SQL & BigQuery projects for online advertising campaigns
 
 ---
 
