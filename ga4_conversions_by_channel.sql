@@ -1,45 +1,30 @@
 -- ga4_conversions_by_channel.sql
 -- Таблиця конверсій від старту сесії до подій cart/checkout/purchase
--- TODO: заміни `project.dataset.events_*` на свій шлях
-WITH base AS (
-  SELECT
-    DATE(TIMESTAMP_MICROS(event_timestamp)) AS event_date,
-    user_pseudo_id,
-    (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') AS session_id,
-    event_name,
-    traffic_source.source AS source,
-    traffic_source.medium AS medium,
-    traffic_source.name AS campaign
-  FROM `project.dataset.events_*`
-  WHERE event_name IN ('session_start','add_to_cart','begin_checkout','purchase')
+With Hm_1 as ( 
+SELECT DATE(timestamp_micros(event_timestamp)) as event_date,
+     traffic_source.source as source,
+     traffic_source.medium as medium,
+     traffic_source.name as campaign,
+     Concat(
+     user_pseudo_id,
+     (select value. int_value from Unnest(event_params) where key = 'ga_session_id')  
+     ) as user_sessions_id,
+     event_name
+FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+Where event_name IN ('session_start', 'add_to_cart', 'begin_checkout', 'purchase')
 ),
-sessions AS (
-  SELECT DISTINCT event_date, user_pseudo_id, session_id, source, medium, campaign
-  FROM base
-  WHERE event_name = 'session_start'
-),
-cart AS (
-  SELECT DISTINCT user_pseudo_id, session_id FROM base WHERE event_name = 'add_to_cart'
-),
-checkout AS (
-  SELECT DISTINCT user_pseudo_id, session_id FROM base WHERE event_name = 'begin_checkout'
-),
-purchase AS (
-  SELECT DISTINCT user_pseudo_id, session_id FROM base WHERE event_name = 'purchase'
+Hm_2 as ( 
+Select event_date, source, medium, campaign,
+Count(Distinct Case When event_name = 'session_start' Then user_sessions_id End) as sessions_start_count,
+Count(Distinct Case When event_name = 'add_to_cart' Then user_sessions_id End) as add_to_cart_count,
+Count(Distinct Case When event_name = 'begin_checkout' Then user_sessions_id End) as begin_checkout_count,
+Count(Distinct Case When event_name = 'purchase' Then user_sessions_id End) as purchase_count
+from Hm_1
+Group by event_date, source, medium, campaign
 )
-SELECT
-  s.event_date,
-  s.source, s.medium, s.campaign,
-  COUNT(DISTINCT CONCAT(s.user_pseudo_id, '-', s.session_id)) AS user_sessions_count,
-  SAFE_DIVIDE(COUNT(DISTINCT IF(c.user_pseudo_id IS NOT NULL, CONCAT(s.user_pseudo_id, '-', s.session_id), NULL)),
-              COUNT(DISTINCT CONCAT(s.user_pseudo_id, '-', s.session_id))) AS visit_to_cart,
-  SAFE_DIVIDE(COUNT(DISTINCT IF(ch.user_pseudo_id IS NOT NULL, CONCAT(s.user_pseudo_id, '-', s.session_id), NULL)),
-              COUNT(DISTINCT CONCAT(s.user_pseudo_id, '-', s.session_id))) AS visit_to_checkout,
-  SAFE_DIVIDE(COUNT(DISTINCT IF(p.user_pseudo_id IS NOT NULL, CONCAT(s.user_pseudo_id, '-', s.session_id), NULL)),
-              COUNT(DISTINCT CONCAT(s.user_pseudo_id, '-', s.session_id))) AS visit_to_purchase
-FROM sessions s
-LEFT JOIN cart c USING (user_pseudo_id, session_id)
-LEFT JOIN checkout ch USING (user_pseudo_id, session_id)
-LEFT JOIN purchase p USING (user_pseudo_id, session_id)
-GROUP BY 1,2,3,4
-ORDER BY 1,2,3,4;
+Select event_date, source, medium, campaign,
+      sessions_start_count as user_sessions_count,
+      (add_to_cart_count / sessions_start_count) * 100 as visit_to_cart, 
+      (begin_checkout_count / sessions_start_count) * 100 as visit_to_checkout,
+      (purchase_count / sessions_start_count) * 100 as visit_to_purchase
+from Hm_2;
