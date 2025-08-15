@@ -1,51 +1,100 @@
-# Online Advertising Campaign Analysis
+# ONLINE ADS ANALYSIS REPO
+👇 Collection of SQL & BigQuery projects for online advertising campaigns
 
-## Overview
-This project contains SQL scripts and analysis results for evaluating the performance of online advertising campaigns on **Facebook** and **Google Ads**.  
-The analysis includes campaign performance metrics, ROMI calculation, reach analysis, and conversion funnels using **PostgreSQL (DBeaver)** and **Google BigQuery**.
+---
 
-## Dataset
-- **facebook_ads_basic_daily** and **google_ads_basic_daily**: daily ad performance data
-- **facebook_adset** and **facebook_campaign**: campaign and ad set details
-- Google Analytics 4 (GA4) event data
+## PROJECT 1: Facebook & Google Ads Daily Spend & ROMI | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/tasks_postgres.sql)
+Analysis of daily ad spend and ROMI for Google and Facebook campaigns using PostgreSQL (DBeaver).
 
-## Tools & Technologies
-- **PostgreSQL** (DBeaver)
-- **Google BigQuery**
-- **Google Analytics 4**
-- SQL (CTEs, aggregation, joins, window functions)
+**The Project**  
+Aggregate daily spend, calculate average, min, max, find top-5 days by ROMI, identify campaigns with highest weekly value and month-to-month reach growth.
 
-## Project Tasks
-1. **Aggregated Spend Analysis**  
-   Calculate average, max, and min daily spend for each ad platform.
-2. **Top 5 Days by ROMI**  
-   Find the top 5 days with the highest ROMI across Facebook and Google Ads.
-3. **Best Weekly Campaign**  
-   Identify the campaign with the highest weekly total value.
-4. **Reach Growth Analysis**  
-   Determine the campaign with the largest month-over-month reach growth.
-5. **Adset Longest Continuous Display | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/bigquery/ga4_engagement_correlation.sql)** 
-   Find the longest daily continuous display period for any adset.
+**Analysis Steps**  
+- Daily spend metrics by platform  
+- Top-5 ROMI days overall  
+- Weekly campaign value ranking  
+- Monthly reach growth by campaign  
+- Longest continuous adset display (optional)
 
-## Conversion Analysis (GA4 Data)
-- Calculate conversion rates from session start to:
-  - Add to Cart
-  - Checkout
-  - Purchase
+**Key Insights**  
+- Highlights best-performing days and campaigns  
+- Tracks campaign growth trends  
+- Identifies high-performing ad sets  
 
-## Results
-- Determined top 5 ROMI days across all channels.
-- Identified most effective campaign based on weekly value.
-- Built conversion funnel metrics and provided actionable recommendations for campaign optimization.
+---
 
-## Repository Structure
-```
-Online_Ads_Analysis_SQL/
-│── sql/              # SQL scripts for PostgreSQL tasks
-│── bigquery/         # SQL scripts for BigQuery tasks
-│── README.md         # Project documentation
-```
+## PROJECT 2: GA4 Events Extraction | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/ga4_events_2021.sql)
+Extraction of user sessions and event data from Google Analytics 4 using BigQuery.
 
-## Author
-Basenko Mykola  
-Junior Data Analyst  
+**The Project**  
+Prepare a clean table with events, users, sessions, and campaign data for 2021, including: session_start, view_item, add_to_cart, begin_checkout, add_shipping_info, add_payment_info, purchase.
+
+**Analysis Steps**  
+- Extract GA4 event data  
+- Map user sessions with events  
+- Filter for 2021 and key events only  
+
+**Key Learnings**  
+- Handling nested GA4 event parameters  
+- Creating unique session identifiers  
+- Preparing data for conversion analysis  
+
+---
+
+## PROJECT 3: Conversion Funnel Analysis by Traffic Source | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/ga4_conversions_by_channel.sql)
+Calculate session-to-purchase conversion rates by traffic source, medium, and campaign.
+
+**The Project**  
+Aggregates session-level data to calculate: visit_to_cart, visit_to_checkout, visit_to_purchase for each date and channel.
+
+**Analysis Steps**  
+- Combine user ID and session ID as unique session key  
+- Aggregate by date, source, medium, campaign  
+- Calculate conversion percentages  
+
+**Key Learnings**  
+- Funnel analysis for e-commerce  
+- Understanding conversion drop-offs  
+- Aggregation and ratio calculations  
+
+---
+
+## PROJECT 4: Landing Page Conversion Comparison | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/ga4_landing_pages_2020.sql)
+Compare conversion performance across landing pages in 2020.
+
+**The Project**  
+Compute number of sessions, purchases, and conversion rates per landing page by combining session_start and purchase events.
+
+**Analysis Steps**  
+- Extract page_path from session_start events  
+- Join with purchase events by session ID  
+- Aggregate metrics per page  
+
+**Key Learnings**  
+- Identifying high-converting pages  
+- Session-level data merging  
+- Yearly aggregated metrics  
+
+---
+
+## PROJECT 5: Engagement vs Purchase Correlation | [view code](https://github.com/BasnMyk/SQL-Final-Project-Ads-GA4-Analysis/blob/main/ga4_engagement_correlation.sql)
+Optional advanced analysis to understand user engagement impact on purchases.
+
+**The Project**  
+Calculate correlation between session engagement and purchase occurrence.
+
+**Analysis Steps**  
+- Compute engagement_time_msec and session_engaged per session  
+- Join with purchase events  
+- Calculate correlation coefficients  
+
+**Key Learnings**  
+- Advanced GA4 session metrics  
+- Statistical correlation in SQL  
+- Insight into engagement-driven conversions  
+
+---
+
+## Credentials
+**Mykola Basenko**  
+Junior Data Analyst 
