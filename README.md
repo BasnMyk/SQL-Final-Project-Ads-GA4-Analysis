@@ -49,4 +49,3 @@ Online_Ads_Analysis_SQL/
 ## Author
 Basenko Mykola  
 Junior Data Analyst  
-[LinkedIn](https://linkedin.com/in/yourprofile) | [Email](mailto:basnkonkolia6@gmail.com)
